@@ -16,12 +16,34 @@ class TipoProdutoController extends Controller
      */
     public function index()
     {
-        // SELECT * FROM TIPO_PRODUTOS e armazenando o resultado no objeto $tipoProdutos
-        // Esse objeto é um vetor de models
-        //$tipoProdutos = TipoProduto::all();
-        $tipoProdutos = DB::select('SELECT * FROM TIPO_PRODUTOS');
-        //print_r($tipoProdutos);
+        try{
+            // SELECT * FROM TIPO_PRODUTOS e armazenando o resultado no objeto $tipoProdutos
+            // Esse objeto é um vetor de models
+            //$tipoProdutos = TipoProduto::all();
+            $tipoProdutos = DB::select('SELECT * FROM TIPO_PRODUTOS');
+
+        } catch(\Throwable $th){
+            return $this->indexMessage([$th->getMessage(), "danger"]);
+        }        
         return view("TipoProduto/index")->with("tipoProdutos", $tipoProdutos);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexMessage($message)
+    {  
+        try{
+
+            $tipoProdutos = DB::select('SELECT * FROM TIPO_PRODUTOS');
+
+        } catch (\Throwable $th){   
+            return view("TipoProduto/index")->with("tipoProdutos", [])->with("message", [$th->getMessage(), "danger"]); 
+        }        
+        // redirect('/produto');
+        return view("TipoProduto/index")->with("tipoProdutos", $tipoProdutos)->with("message", $message);       
     }
 
     /**
